@@ -264,7 +264,8 @@
       .replace('__NAME__', encodeURIComponent(state.name))
       .replace('__TEL__', encodeURIComponent(state.tel))
       .replace('__TEXT__', encodeURIComponent(summary))
-      .replace('__DATA__', encodeURIComponent(JSON.stringify(payload)));
+      // 先頭に文字を付けて JSON として読めないようにする（Forms は JSON に見える値をオブジェクトとして扱い [object Object] にしてしまう）
+      .replace('__DATA__', encodeURIComponent('KENGAKU:' + JSON.stringify(payload)));
     location.href = url;
   };
 

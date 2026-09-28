@@ -235,27 +235,49 @@
         h.textContent = d.name;
         const ranks = document.createElement('div');
         ranks.className = 'ranks';
-        [1, 2, 3].forEach((k) => {
-          const sel = document.createElement('md-outlined-select');
-          sel.label = k === 1 ? '第1希望' : '第' + k + '希望（任意）';
-          if (k === 1) sel.required = true;
-          sel.dataset.dept = id;
-          sel.dataset.rank = k;
-          const opts = (k === 1 ? [] : [{ id: '', label: 'なし' }]).concat(d.slots);
-          opts.forEach((s) => {
-            const o = document.createElement('md-select-option');
-            o.value = String(s.id);
-            if (String(cur[k - 1] || '') === String(s.id) && s.id !== '') o.setAttribute('selected', '');
-            const t = document.createElement('div');
-            t.slot = 'headline';
-            t.textContent = s.label;
-            o.appendChild(t);
-            sel.appendChild(o);
-          });
-          ranks.appendChild(sel);
-        });
+        const sels = [null, null, null];
+        const values = [cur[0] || null, cur[1] || null, cur[2] || null];
+        // 前の順位で選んだ日程は、後の順位の選択肢に出さない。
+        // from 番目より後のプルダウンを新しく作って差し替える（選択肢だけ入れ替えると前の値が残るため）
+        const rebuild = (from) => {
+          for (let i = from; i < 3; i++) {
+            const picked = values.slice(0, i).filter(Boolean);
+            const opts = (i === 0 ? [] : [{ id: '', label: 'なし' }]).concat(d.slots.filter((s) => !picked.includes(s.id)));
+            // 選んでいた日程が前の順位で使われた場合は「なし」に戻す
+            if (values[i] && !opts.some((s) => s.id === values[i])) values[i] = null;
+            const sel = makeSelect(id, i + 1, opts, values[i]);
+            sel.addEventListener('change', () => {
+              values[i] = sel.value ? +sel.value : null;
+              sel.error = false; sel.errorText = '';
+              rebuild(i + 1);
+            });
+            if (sels[i]) sels[i].replaceWith(sel); else ranks.appendChild(sel);
+            sels[i] = sel;
+          }
+        };
+        rebuild(0);
         box.append(h, ranks);
       });
+    }
+
+    // プルダウンを作る（value が null なら未選択。第2・第3希望は「なし」を選んだ状態）
+    function makeSelect(deptId, k, opts, value) {
+      const sel = document.createElement('md-outlined-select');
+      sel.label = k === 1 ? '第1希望' : '第' + k + '希望（任意）';
+      if (k === 1) sel.required = true;
+      sel.dataset.dept = deptId;
+      sel.dataset.rank = k;
+      opts.forEach((s) => {
+        const o = document.createElement('md-select-option');
+        o.value = String(s.id);
+        if ((value && s.id === value) || (!value && s.id === '')) o.setAttribute('selected', '');
+        const t = document.createElement('div');
+        t.slot = 'headline';
+        t.textContent = s.label;
+        o.appendChild(t);
+        sel.appendChild(o);
+      });
+      return sel;
     }
 
     function readRanks() {

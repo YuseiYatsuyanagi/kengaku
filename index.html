@@ -5,273 +5,333 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
 <title>病院見学 希望日程の回答</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap">
 <style>
+  /* Material 3 の配色（基準色 #175CA1）。部品は material.js（Material Web）で読み込む */
   :root {
-    --primary: #175ca1; --primary-weak: #e2edf8; --bg: #f4f6f9; --card: #fff;
-    --text: #20252b; --sub: #656e7a; --border: #d6dce3; --danger: #c02626; --ok: #168048;
+    color-scheme: light;
+    --md-ref-typeface-brand: 'Noto Sans JP', 'Hiragino Sans', 'Yu Gothic UI', 'Meiryo', sans-serif;
+    --md-ref-typeface-plain: 'Noto Sans JP', 'Hiragino Sans', 'Yu Gothic UI', 'Meiryo', sans-serif;
+    --md-sys-color-primary: #175CA1;
+    --md-sys-color-on-primary: #FFFFFF;
+    --md-sys-color-primary-container: #D4E3FF;
+    --md-sys-color-on-primary-container: #001C3A;
+    --md-sys-color-secondary-container: #D7E3F8;
+    --md-sys-color-on-secondary-container: #101C2B;
+    --md-sys-color-surface: #F9F9FF;
+    --md-sys-color-surface-container: #EDEDF4;
+    --md-sys-color-surface-container-high: #E7E8EE;
+    --md-sys-color-surface-container-highest: #E2E2E9;
+    --md-sys-color-on-surface: #191C20;
+    --md-sys-color-on-surface-variant: #43474E;
+    --md-sys-color-outline: #73777F;
+    --md-sys-color-outline-variant: #C3C6CF;
+    --md-sys-color-error: #BA1A1A;
+    --md-sys-color-on-error: #FFFFFF;
+    --warn: #7A4A00;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      color-scheme: dark;
+      --md-sys-color-primary: #A5C8FF;
+      --md-sys-color-on-primary: #00315F;
+      --md-sys-color-primary-container: #004786;
+      --md-sys-color-on-primary-container: #D4E3FF;
+      --md-sys-color-secondary-container: #3B4858;
+      --md-sys-color-on-secondary-container: #D7E3F8;
+      --md-sys-color-surface: #111318;
+      --md-sys-color-surface-container: #1D2024;
+      --md-sys-color-surface-container-high: #282A2F;
+      --md-sys-color-surface-container-highest: #33353A;
+      --md-sys-color-on-surface: #E2E2E9;
+      --md-sys-color-on-surface-variant: #C3C6CF;
+      --md-sys-color-outline: #8D9199;
+      --md-sys-color-outline-variant: #43474E;
+      --md-sys-color-error: #FFB4AB;
+      --md-sys-color-on-error: #690005;
+      --warn: #FFB870;
+    }
   }
   * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--text);
-         font-family: system-ui, -apple-system, "Hiragino Sans", "Yu Gothic UI", "Meiryo", sans-serif; line-height: 1.6; }
-  header { background: var(--primary); color: #fff; padding: 14px 16px; }
-  header h1 { font-size: 18px; margin: 0; }
-  header p { margin: 2px 0 0; font-size: 13px; opacity: .9; }
-  main { max-width: 640px; margin: 0 auto; padding: 16px; }
-  .steps { display: flex; gap: 6px; margin-bottom: 14px; }
-  .steps div { flex: 1; text-align: center; font-size: 12px; padding: 6px 0; border-radius: 6px; background: #e6e9ee; color: var(--sub); }
-  .steps div.on { background: var(--primary); color: #fff; font-weight: 600; }
-  .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 14px; }
-  .card h2 { font-size: 16px; margin: 0 0 10px; }
-  label.field { display: block; font-size: 14px; font-weight: 600; margin: 10px 0 4px; }
-  input[type=text], input[type=tel], select { width: 100%; font-size: 16px; padding: 10px; border: 1px solid var(--border); border-radius: 8px; background: #fff; color: var(--text); }
-  .dept { display: flex; align-items: center; gap: 10px; padding: 10px 4px; border-top: 1px solid var(--border); cursor: pointer; }
-  .dept:first-of-type { border-top: 0; }
-  .dept input { width: 20px; height: 20px; flex: none; }
-  .dept small { color: var(--sub); margin-left: auto; white-space: nowrap; }
-  .rank { display: grid; grid-template-columns: 70px 1fr; align-items: center; gap: 8px; margin: 6px 0; }
-  .rank span { font-size: 14px; }
-  .req { color: var(--danger); font-size: 12px; }
-  .actions { display: flex; gap: 10px; margin-top: 6px; }
-  button { font-size: 16px; padding: 12px 16px; border-radius: 8px; border: 1px solid var(--primary); cursor: pointer; }
-  button.primary { background: var(--primary); color: #fff; flex: 1; }
-  button.secondary { background: #fff; color: var(--primary); }
-  .error { color: var(--danger); font-size: 14px; margin: 8px 0 0; white-space: pre-line; }
-  .warn { background: #fff7e6; border: 1px solid #f0c36d; border-radius: 8px; padding: 10px; font-size: 14px; white-space: pre-line; }
-  .note { font-size: 13px; color: var(--sub); }
-  table { width: 100%; border-collapse: collapse; font-size: 14px; }
-  th, td { text-align: left; padding: 6px 4px; border-bottom: 1px solid var(--border); vertical-align: top; }
-  th { color: var(--sub); font-weight: 600; width: 36%; }
-  .hidden { display: none; }
+  html, body { margin: 0; }
+  body {
+    background: var(--md-sys-color-surface);
+    color: var(--md-sys-color-on-surface);
+    font-family: var(--md-ref-typeface-plain);
+    -webkit-text-size-adjust: 100%;
+  }
+  main { max-width: 600px; margin: 0 auto; padding: 0 16px 40px; }
+  header.top { padding: 24px 0 12px; }
+  header.top h1 { margin: 0; }
+  .sub { margin: 4px 0 0; color: var(--md-sys-color-on-surface-variant); }
+  .progress { margin: 8px 0 4px; }
+  md-linear-progress { width: 100%; }
+  .step-label { margin: 8px 0 20px; color: var(--md-sys-color-primary); }
+  h2 { margin: 24px 0 4px; }
+  .hint { margin: 0 0 12px; color: var(--md-sys-color-on-surface-variant); }
+  .fields { display: flex; flex-direction: column; gap: 16px; margin-top: 12px; }
+  md-outlined-text-field, md-outlined-select { width: 100%; }
+  .check-row { display: flex; align-items: center; gap: 4px; min-height: 56px; cursor: pointer; }
+  .check-row md-checkbox { flex-shrink: 0; }
+  .ranks { display: flex; flex-direction: column; gap: 16px; margin: 12px 0 8px; }
+  .kv { display: grid; grid-template-columns: 7.5em minmax(0, 1fr); gap: 12px; padding: 14px 0; }
+  .kv dt { color: var(--md-sys-color-on-surface-variant); }
+  .kv dd { margin: 0; white-space: pre-line; }
+  dl { margin: 0; }
+  .error { color: var(--md-sys-color-error); white-space: pre-line; margin: 12px 0 0; min-height: 0; }
+  .error:empty { display: none; }
+  .warn { color: var(--warn); white-space: pre-line; margin: 16px 0 0; }
+  .notice { margin: 20px 0 0; }
+  .notice strong { color: var(--md-sys-color-primary); font-weight: 700; }
+  .actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 28px; }
+  .actions md-filled-button { min-width: 120px; }
+  [hidden] { display: none !important; }
 </style>
+<script src="material.js"></script>
 </head>
 <body>
-<header>
-  <h1>病院見学 希望日程の回答</h1>
-  <p id="roundInfo"></p>
-</header>
 <main>
-  <div id="fatal" class="card hidden">
-    <h2>このページは開けません</h2>
-    <p>メールに記載されたリンクから開いてください。リンクが途中で切れている場合は、事務局にお問い合わせください。</p>
-  </div>
+  <header class="top">
+    <h1 class="md-typescale-headline-small">病院見学 希望日程の回答</h1>
+    <p class="sub md-typescale-body-medium" id="roundInfo"></p>
+  </header>
 
-  <div id="app" class="hidden">
-    <div class="steps"><div data-s="1">1 基本情報</div><div data-s="2">2 日程</div><div data-s="3">3 確認</div></div>
+  <section id="fatal" hidden>
+    <h2 class="md-typescale-title-large">このページは開けません</h2>
+    <p class="md-typescale-body-large">メールに記載されたリンクから開いてください。リンクが途中で切れている場合は、事務局にお問い合わせください。</p>
+  </section>
+
+  <div id="app" hidden>
+    <div class="progress"><md-linear-progress id="progress" value="0.33" aria-label="回答の進み具合"></md-linear-progress></div>
+    <p class="step-label md-typescale-label-large" id="stepLabel"></p>
 
     <section id="step1">
-      <div class="card">
-        <h2>氏名・電話番号</h2>
-        <label class="field" for="name">氏名 <span class="req">必須</span></label>
-        <input type="text" id="name" autocomplete="name" placeholder="例）愛知 花子">
-        <label class="field" for="tel">電話番号 <span class="req">必須</span></label>
-        <input type="tel" id="tel" autocomplete="tel" placeholder="例）090-1234-5678">
+      <h2 class="md-typescale-title-medium">あなたについて</h2>
+      <div class="fields">
+        <md-outlined-text-field id="name" label="氏名" required autocomplete="name" supporting-text="例）愛知 花子"></md-outlined-text-field>
+        <md-outlined-text-field id="tel" label="電話番号" type="tel" required autocomplete="tel" supporting-text="例）090-1234-5678"></md-outlined-text-field>
       </div>
-      <div class="card">
-        <h2>見学したい診療科（複数選択可）</h2>
-        <div id="deptList"></div>
-      </div>
-      <p id="err1" class="error"></p>
-      <div class="actions"><button class="primary" id="next1">次へ</button></div>
+      <h2 class="md-typescale-title-medium">見学したい診療科</h2>
+      <p class="hint md-typescale-body-medium">複数選べます。</p>
+      <div id="deptList"></div>
+      <p class="error md-typescale-body-medium" id="err1"></p>
+      <div class="actions"><md-filled-button id="next1">次へ</md-filled-button></div>
     </section>
 
-    <section id="step2" class="hidden">
-      <p class="note">診療科ごとに第1希望〜第3希望を選んでください（第2・第3希望は任意）。</p>
+    <section id="step2" hidden>
+      <p class="hint md-typescale-body-medium">診療科ごとに第1希望を選んでください。第2・第3希望は任意です。</p>
       <div id="rankList"></div>
-      <p id="err2" class="error"></p>
-      <div class="actions"><button class="secondary" id="back2">戻る</button><button class="primary" id="next2">確認へ</button></div>
+      <p class="error md-typescale-body-medium" id="err2"></p>
+      <div class="actions"><md-text-button id="back2">戻る</md-text-button><md-filled-button id="next2">確認へ</md-filled-button></div>
     </section>
 
-    <section id="step3" class="hidden">
-      <div class="card">
-        <h2>回答内容の確認</h2>
-        <table id="confirm"></table>
-      </div>
-      <div id="warn2" class="warn hidden" style="margin-bottom:14px"></div>
-      <div class="warn">次へ進むと Microsoft Forms の画面が開きます。<b>開いた画面の［送信］ボタンを押すまで、回答は完了しません。</b></div>
-      <div class="actions" style="margin-top:14px"><button class="secondary" id="back3">戻る</button><button class="primary" id="submit">送信画面へ進む</button></div>
+    <section id="step3" hidden>
+      <h2 class="md-typescale-title-medium">回答内容の確認</h2>
+      <dl id="confirm"></dl>
+      <p class="warn md-typescale-body-medium" id="warn2" hidden></p>
+      <p class="notice md-typescale-body-large">次へ進むと Microsoft Forms の画面が開きます。<strong>開いた画面の［送信］を押すまで、回答は完了しません。</strong></p>
+      <div class="actions"><md-text-button id="back3">戻る</md-text-button><md-filled-button id="submit">送信画面へ進む</md-filled-button></div>
     </section>
   </div>
 </main>
 
-<script>
-(function () {
-  'use strict';
-  var $ = function (id) { return document.getElementById(id); };
-  var WEEK = ['日', '月', '火', '水', '木', '金', '土'];
+<script type="module">
+  const $ = (id) => document.getElementById(id);
+  const WEEK = ['日', '月', '火', '水', '木', '金', '土'];
+  const STEPS = ['基本情報', '希望日程', '確認'];
 
   // ---- リンクの # 以降を読み取る ----
   // 形式: v=1&r=募集ID&t=名称&dl=期限&f=Formsテンプレート&s=科ID*科名*枠ID.yyyymmdd.1|2,...!科ID*...
   function parseHash() {
-    var raw = location.hash.replace(/^#/, '');
-    var p = {};
-    raw.split('&').forEach(function (kv) {
-      var i = kv.indexOf('=');
+    const p = {};
+    location.hash.replace(/^#/, '').split('&').forEach((kv) => {
+      const i = kv.indexOf('=');
       if (i > 0) p[kv.slice(0, i)] = kv.slice(i + 1);
     });
     if (!p.r || !p.s || !p.f) return null;
-    var dec = function (s) { try { return decodeURIComponent(s || ''); } catch (e) { return s || ''; } };
-    var depts = p.s.split('!').map(function (d) {
-      var a = d.split('*');
+    const dec = (s) => { try { return decodeURIComponent(s || ''); } catch (e) { return s || ''; } };
+    const depts = p.s.split('!').map((d) => {
+      const a = d.split('*');
       if (a.length < 3) return null;
-      var slots = a[2].split(',').filter(Boolean).map(function (s) {
-        var b = s.split('.');
-        var ymd = b[1] || '';
-        var dt = new Date(+ymd.slice(0, 4), +ymd.slice(4, 6) - 1, +ymd.slice(6, 8));
-        var period = b[2] === '1' ? '午前' : '午後';
-        return { id: +b[0], label: (dt.getMonth() + 1) + '月' + dt.getDate() + '日(' + WEEK[dt.getDay()] + ') ' + period, key: ymd + b[2] };
+      const slots = a[2].split(',').filter(Boolean).map((s) => {
+        const [id, ymd = '', pm] = s.split('.');
+        const dt = new Date(+ymd.slice(0, 4), +ymd.slice(4, 6) - 1, +ymd.slice(6, 8));
+        return { id: +id, key: ymd + pm, label: (dt.getMonth() + 1) + '月' + dt.getDate() + '日(' + WEEK[dt.getDay()] + ') ' + (pm === '1' ? '午前' : '午後') };
       });
-      return { id: +a[0], name: dec(a[1]), slots: slots };
-    }).filter(function (d) { return d && d.slots.length; });
-    return { round: +p.r, title: dec(p.t), deadline: dec(p.dl), form: dec(p.f), depts: depts };
+      return { id: +a[0], name: dec(a[1]), slots };
+    }).filter((d) => d && d.slots.length);
+    return { round: +p.r, title: dec(p.t), deadline: dec(p.dl), form: dec(p.f), depts };
   }
 
-  var cfg = parseHash();
-  if (!cfg || !cfg.depts.length) { $('fatal').classList.remove('hidden'); return; }
-  $('app').classList.remove('hidden');
-  $('roundInfo').textContent = cfg.title + (cfg.deadline ? '　回答期限：' + cfg.deadline : '');
-
-  // 入力途中の内容を同じタブ内で保持（戻るボタン対策）
-  var STORE = 'kengaku-' + cfg.round;
-  var state = { name: '', tel: '', depts: [], ranks: {} };
-  try { var saved = JSON.parse(sessionStorage.getItem(STORE) || 'null'); if (saved) state = saved; } catch (e) {}
-  function save() { try { sessionStorage.setItem(STORE, JSON.stringify(state)); } catch (e) {} }
-
-  function show(n) {
-    [1, 2, 3].forEach(function (i) { $('step' + i).classList.toggle('hidden', i !== n); });
-    document.querySelectorAll('.steps div').forEach(function (d) { d.classList.toggle('on', +d.dataset.s === n); });
-    window.scrollTo(0, 0);
+  const cfg = parseHash();
+  if (!cfg || !cfg.depts.length) {
+    $('fatal').hidden = false;
+  } else {
+    start();
   }
-  function deptById(id) { return cfg.depts.filter(function (d) { return d.id === id; })[0]; }
-  function slotById(dept, id) { return dept.slots.filter(function (s) { return s.id === id; })[0]; }
 
-  // ---- STEP 1 ----
-  $('name').value = state.name;
-  $('tel').value = state.tel;
-  cfg.depts.forEach(function (d) {
-    var row = document.createElement('label');
-    row.className = 'dept';
-    var cb = document.createElement('input');
-    cb.type = 'checkbox'; cb.value = d.id; cb.checked = state.depts.indexOf(d.id) >= 0;
-    var nm = document.createElement('span'); nm.textContent = d.name;
-    var sm = document.createElement('small'); sm.textContent = '候補 ' + d.slots.length + '枠';
-    row.appendChild(cb); row.appendChild(nm); row.appendChild(sm);
-    $('deptList').appendChild(row);
-  });
+  function start() {
+    $('app').hidden = false;
+    $('roundInfo').textContent = cfg.title + (cfg.deadline ? '　回答期限 ' + cfg.deadline : '');
 
-  $('next1').onclick = function () {
-    state.name = $('name').value.trim();
-    state.tel = $('tel').value.trim();
-    state.depts = Array.prototype.map.call(document.querySelectorAll('#deptList input:checked'), function (c) { return +c.value; });
-    var errs = [];
-    if (!state.name) errs.push('氏名を入力してください。');
-    if (!/^[0-9０-９+\-－ー() ]{10,}$/.test(state.tel)) errs.push('電話番号を正しく入力してください。');
-    if (!state.depts.length) errs.push('見学したい診療科を1つ以上選んでください。');
-    $('err1').textContent = errs.join('\n');
-    if (errs.length) return;
-    save(); buildStep2(); show(2);
-  };
+    // 入力途中の内容を同じタブ内で保持（ブラウザの戻る対策）
+    const STORE = 'kengaku-' + cfg.round;
+    let state = { name: '', tel: '', depts: [], ranks: {} };
+    try { const saved = JSON.parse(sessionStorage.getItem(STORE) || 'null'); if (saved) state = saved; } catch (e) {}
+    const save = () => { try { sessionStorage.setItem(STORE, JSON.stringify(state)); } catch (e) {} };
 
-  // ---- STEP 2 ----
-  function buildStep2() {
-    var box = $('rankList');
-    box.innerHTML = '';
-    state.depts.forEach(function (id) {
-      var d = deptById(id);
-      var card = document.createElement('div'); card.className = 'card';
-      var h = document.createElement('h2'); h.textContent = d.name; card.appendChild(h);
-      var cur = state.ranks[id] || [];
-      [1, 2, 3].forEach(function (k) {
-        var row = document.createElement('div'); row.className = 'rank';
-        var lb = document.createElement('span'); lb.textContent = '第' + k + '希望';
-        var sel = document.createElement('select');
-        sel.dataset.dept = id; sel.dataset.rank = k;
-        var o0 = document.createElement('option'); o0.value = ''; o0.textContent = k === 1 ? '選択してください' : '（なし）';
-        sel.appendChild(o0);
-        d.slots.forEach(function (s) {
-          var o = document.createElement('option'); o.value = s.id; o.textContent = s.label; sel.appendChild(o);
+    const deptById = (id) => cfg.depts.find((d) => d.id === id);
+    const slotById = (dept, id) => dept.slots.find((s) => s.id === id);
+
+    function show(n) {
+      [1, 2, 3].forEach((i) => { $('step' + i).hidden = i !== n; });
+      $('progress').value = n / 3;
+      $('stepLabel').textContent = 'ステップ ' + n + ' / 3　' + STEPS[n - 1];
+      window.scrollTo(0, 0);
+    }
+
+    // ---- ステップ1：氏名・電話番号・診療科 ----
+    $('name').value = state.name;
+    $('tel').value = state.tel;
+    cfg.depts.forEach((d, i) => {
+      if (i > 0) $('deptList').appendChild(document.createElement('md-divider'));
+      const row = document.createElement('label');
+      row.className = 'check-row';
+      const cb = document.createElement('md-checkbox');
+      cb.setAttribute('touch-target', 'wrapper');
+      cb.dataset.id = d.id;
+      cb.checked = state.depts.includes(d.id);
+      const nm = document.createElement('span');
+      nm.className = 'md-typescale-body-large';
+      nm.textContent = d.name;
+      row.append(cb, nm);
+      $('deptList').appendChild(row);
+    });
+
+    $('next1').addEventListener('click', () => {
+      state.name = $('name').value.trim();
+      state.tel = $('tel').value.trim();
+      state.depts = [...$('deptList').querySelectorAll('md-checkbox')].filter((c) => c.checked).map((c) => +c.dataset.id);
+      const nameNg = !state.name, telNg = !/^[0-9０-９+\-－ー() ]{10,}$/.test(state.tel);
+      $('name').error = nameNg; $('name').errorText = nameNg ? '氏名を入力してください' : '';
+      $('tel').error = telNg; $('tel').errorText = telNg ? '電話番号を正しく入力してください' : '';
+      $('err1').textContent = state.depts.length ? '' : '見学したい診療科を1つ以上選んでください。';
+      if (nameNg || telNg || !state.depts.length) return;
+      save(); buildStep2(); show(2);
+    });
+
+    // ---- ステップ2：第1〜第3希望 ----
+    function buildStep2() {
+      const box = $('rankList');
+      box.textContent = '';
+      state.depts.forEach((id, n) => {
+        const d = deptById(id);
+        const cur = state.ranks[id] || [];
+        if (n > 0) box.appendChild(document.createElement('md-divider'));
+        const h = document.createElement('h2');
+        h.className = 'md-typescale-title-medium';
+        h.textContent = d.name;
+        const ranks = document.createElement('div');
+        ranks.className = 'ranks';
+        [1, 2, 3].forEach((k) => {
+          const sel = document.createElement('md-outlined-select');
+          sel.label = k === 1 ? '第1希望' : '第' + k + '希望（任意）';
+          if (k === 1) sel.required = true;
+          sel.dataset.dept = id;
+          sel.dataset.rank = k;
+          const opts = (k === 1 ? [] : [{ id: '', label: 'なし' }]).concat(d.slots);
+          opts.forEach((s) => {
+            const o = document.createElement('md-select-option');
+            o.value = String(s.id);
+            if (String(cur[k - 1] || '') === String(s.id) && s.id !== '') o.setAttribute('selected', '');
+            const t = document.createElement('div');
+            t.slot = 'headline';
+            t.textContent = s.label;
+            o.appendChild(t);
+            sel.appendChild(o);
+          });
+          ranks.appendChild(sel);
         });
-        if (cur[k - 1]) sel.value = cur[k - 1];
-        row.appendChild(lb); row.appendChild(sel); card.appendChild(row);
+        box.append(h, ranks);
       });
-      box.appendChild(card);
-    });
-  }
+    }
 
-  function readRanks() {
-    var r = {};
-    document.querySelectorAll('#rankList select').forEach(function (s) {
-      var id = +s.dataset.dept;
-      (r[id] = r[id] || [null, null, null])[+s.dataset.rank - 1] = s.value ? +s.value : null;
-    });
-    return r;
-  }
-
-  $('back2').onclick = function () { state.ranks = readRanks(); save(); show(1); };
-  $('next2').onclick = function () {
-    state.ranks = readRanks();
-    var errs = [];
-    var firstKeys = {};
-    state.depts.forEach(function (id) {
-      var d = deptById(id), r = state.ranks[id] || [];
-      if (!r[0]) errs.push(d.name + '：第1希望を選んでください。');
-      if (!r[0] && (r[1] || r[2])) return;
-      if (!r[1] && r[2]) errs.push(d.name + '：第2希望を空けて第3希望を選ぶことはできません。');
-      var chosen = r.filter(Boolean);
-      if (chosen.length !== new Set(chosen).size) errs.push(d.name + '：同じ日程が重複しています。');
-      if (r[0]) { var k = slotById(d, r[0]).key; (firstKeys[k] = firstKeys[k] || []).push(d.name); }
-    });
-    $('err2').textContent = errs.join('\n');
-    var warns = Object.keys(firstKeys).filter(function (k) { return firstKeys[k].length > 1; }).map(function (k) {
-      return '第1希望が同じ日時です：' + firstKeys[k].join('、');
-    });
-    $('warn2').textContent = warns.length ? warns.join('\n') + '\n（同じ時間に2つの科へは行けないため、どちらかは第2希望以降で調整されます）' : '';
-    $('warn2').classList.toggle('hidden', !warns.length);
-    if (errs.length) return;
-    save(); buildStep3(); show(3);
-  };
-
-  // ---- STEP 3 ----
-  var payload = null, summary = '';
-  function buildStep3() {
-    var rows = [['氏名', state.name], ['電話番号', state.tel]];
-    var lines = [];
-    var p = [];
-    state.depts.forEach(function (id) {
-      var d = deptById(id), r = state.ranks[id];
-      var txt = [];
-      r.forEach(function (sid, i) {
-        if (!sid) return;
-        var s = slotById(d, sid);
-        txt.push('第' + (i + 1) + '希望 ' + s.label);
-        p.push({ d: id, s: sid, k: i + 1 });
+    function readRanks() {
+      const r = {};
+      $('rankList').querySelectorAll('md-outlined-select').forEach((s) => {
+        const id = +s.dataset.dept;
+        (r[id] = r[id] || [null, null, null])[+s.dataset.rank - 1] = s.value ? +s.value : null;
       });
-      rows.push([d.name, txt.join('\n')]);
-      lines.push('【' + d.name + '】' + txt.join(' / '));
-    });
-    var tb = $('confirm'); tb.innerHTML = '';
-    rows.forEach(function (r) {
-      var tr = document.createElement('tr');
-      var th = document.createElement('th'); th.textContent = r[0];
-      var td = document.createElement('td'); td.textContent = r[1]; td.style.whiteSpace = 'pre-line';
-      tr.appendChild(th); tr.appendChild(td); tb.appendChild(tr);
-    });
-    payload = { r: cfg.round, p: p };
-    summary = lines.join('\n');
-  }
-  $('back3').onclick = function () { buildStep2(); show(2); };
-  $('submit').onclick = function () {
-    var url = cfg.form
-      .replace('__NAME__', encodeURIComponent(state.name))
-      .replace('__TEL__', encodeURIComponent(state.tel))
-      .replace('__TEXT__', encodeURIComponent(summary))
-      // 先頭に文字を付けて JSON として読めないようにする（Forms は JSON に見える値をオブジェクトとして扱い [object Object] にしてしまう）
-      .replace('__DATA__', encodeURIComponent('KENGAKU:' + JSON.stringify(payload)));
-    location.href = url;
-  };
+      return r;
+    }
 
-  if (state.depts.length && state.name) { buildStep2(); }
-  show(1);
-})();
+    $('back2').addEventListener('click', () => { state.ranks = readRanks(); save(); show(1); });
+    $('next2').addEventListener('click', () => {
+      state.ranks = readRanks();
+      const errs = [];
+      const firstKeys = {};
+      $('rankList').querySelectorAll('md-outlined-select').forEach((s) => { s.error = false; s.errorText = ''; });
+      const selOf = (id, k) => $('rankList').querySelector('md-outlined-select[data-dept="' + id + '"][data-rank="' + k + '"]');
+      state.depts.forEach((id) => {
+        const d = deptById(id), r = state.ranks[id] || [];
+        const mark = (k, msg) => { const s = selOf(id, k); s.error = true; s.errorText = msg; errs.push(d.name + '：' + msg); };
+        if (!r[0]) mark(1, '第1希望を選んでください');
+        if (!r[1] && r[2]) mark(2, '第3希望より先に第2希望を選んでください');
+        const chosen = r.filter(Boolean);
+        if (chosen.length !== new Set(chosen).size) mark(chosen.length === 3 && r[1] === r[2] ? 3 : 2, '同じ日程が重複しています');
+        if (r[0]) { const key = slotById(d, r[0]).key; (firstKeys[key] = firstKeys[key] || []).push(d.name); }
+      });
+      $('err2').textContent = errs.length ? '入力を確認してください。' : '';
+      if (errs.length) return;
+      const warns = Object.keys(firstKeys).filter((k) => firstKeys[k].length > 1).map((k) => '第1希望が同じ日時です：' + firstKeys[k].join('、'));
+      $('warn2').textContent = warns.length ? warns.join('\n') + '\n同じ時間に2つの科へは行けないため、どちらかは第2希望以降で調整されます。' : '';
+      $('warn2').hidden = !warns.length;
+      save(); buildStep3(); show(3);
+    });
+
+    // ---- ステップ3：確認と送信 ----
+    let payload = null, summary = '';
+    function buildStep3() {
+      const rows = [['氏名', state.name], ['電話番号', state.tel]];
+      const lines = [], p = [];
+      state.depts.forEach((id) => {
+        const d = deptById(id), txt = [];
+        state.ranks[id].forEach((sid, i) => {
+          if (!sid) return;
+          txt.push('第' + (i + 1) + '希望　' + slotById(d, sid).label);
+          p.push({ d: id, s: sid, k: i + 1 });
+        });
+        rows.push([d.name, txt.join('\n')]);
+        lines.push('【' + d.name + '】' + txt.join(' / '));
+      });
+      const dl = $('confirm');
+      dl.textContent = '';
+      rows.forEach((r, i) => {
+        if (i > 0) dl.appendChild(document.createElement('md-divider'));
+        const kv = document.createElement('div');
+        kv.className = 'kv';
+        const dt = document.createElement('dt'); dt.className = 'md-typescale-label-large'; dt.textContent = r[0];
+        const dd = document.createElement('dd'); dd.className = 'md-typescale-body-large'; dd.textContent = r[1];
+        kv.append(dt, dd);
+        dl.appendChild(kv);
+      });
+      payload = { r: cfg.round, p };
+      summary = lines.join('\n');
+    }
+    $('back3').addEventListener('click', () => { buildStep2(); show(2); });
+    $('submit').addEventListener('click', () => {
+      location.href = cfg.form
+        .replace('__NAME__', encodeURIComponent(state.name))
+        .replace('__TEL__', encodeURIComponent(state.tel))
+        .replace('__TEXT__', encodeURIComponent(summary))
+        // 先頭に文字を付けて JSON として読めないようにする（Forms は JSON に見える値をオブジェクトとして扱い [object Object] にしてしまう）
+        .replace('__DATA__', encodeURIComponent('KENGAKU:' + JSON.stringify(payload)));
+    });
+
+    show(1);
+  }
 </script>
 </body>
 </html>

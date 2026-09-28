@@ -111,7 +111,7 @@
       <h2 class="md-typescale-title-medium">あなたについて</h2>
       <div class="fields">
         <md-outlined-text-field id="name" label="氏名" required autocomplete="name" supporting-text="例）愛知 花子"></md-outlined-text-field>
-        <md-outlined-text-field id="tel" label="電話番号" type="tel" required autocomplete="tel" supporting-text="例）090-1234-5678"></md-outlined-text-field>
+        <md-outlined-text-field id="tel" label="電話番号" type="tel" inputmode="numeric" maxlength="11" required autocomplete="tel" supporting-text="ハイフンなしで入力（例 09012345678）"></md-outlined-text-field>
       </div>
       <h2 class="md-typescale-title-medium">見学したい診療科</h2>
       <p class="hint md-typescale-body-medium">複数選べます。</p>
@@ -132,6 +132,7 @@
       <dl id="confirm"></dl>
       <p class="warn md-typescale-body-medium" id="warn2" hidden></p>
       <p class="notice md-typescale-body-large">次へ進むと Microsoft Forms の画面が開きます。<strong>開いた画面の［送信］を押すまで、回答は完了しません。</strong></p>
+      <p class="hint md-typescale-body-medium">内容を変えたいときは、もう一度このページから回答してください。最後に送った回答が使われます。</p>
       <div class="actions"><md-text-button id="back3">戻る</md-text-button><md-filled-button id="submit">送信画面へ進む</md-filled-button></div>
     </section>
   </div>
@@ -198,6 +199,13 @@
     // ---- ステップ1：氏名・電話番号・診療科 ----
     $('name').value = state.name;
     $('tel').value = state.tel;
+    // 電話番号は半角の数字だけにする（全角数字は半角に、ハイフン・空白などは取り除く）
+    const digitsOnly = (s) => s.replace(/[０-９]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 0xFEE0)).replace(/\D/g, '').slice(0, 11);
+    $('tel').addEventListener('input', () => {
+      const v = digitsOnly($('tel').value);
+      if (v !== $('tel').value) $('tel').value = v;
+      if ($('tel').error) { $('tel').error = false; $('tel').errorText = ''; }
+    });
     cfg.depts.forEach((d, i) => {
       if (i > 0) $('deptList').appendChild(document.createElement('md-divider'));
       const row = document.createElement('label');
@@ -215,11 +223,11 @@
 
     $('next1').addEventListener('click', () => {
       state.name = $('name').value.trim();
-      state.tel = $('tel').value.trim();
+      state.tel = digitsOnly($('tel').value);
       state.depts = [...$('deptList').querySelectorAll('md-checkbox')].filter((c) => c.checked).map((c) => +c.dataset.id);
-      const nameNg = !state.name, telNg = !/^[0-9０-９+\-－ー() ]{10,}$/.test(state.tel);
+      const nameNg = !state.name, telNg = !/^0\d{9,10}$/.test(state.tel);
       $('name').error = nameNg; $('name').errorText = nameNg ? '氏名を入力してください' : '';
-      $('tel').error = telNg; $('tel').errorText = telNg ? '電話番号を正しく入力してください' : '';
+      $('tel').error = telNg; $('tel').errorText = telNg ? '0から始まる10〜11桁の数字で入力してください' : '';
       $('err1').textContent = state.depts.length ? '' : '見学したい診療科を1つ以上選んでください。';
       if (nameNg || telNg || !state.depts.length) return;
       save(); buildStep2(); show(2);
